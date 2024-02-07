@@ -117,17 +117,30 @@ public class BreakoutPanel extends JPanel implements ActionListener, KeyListener
 		
 		// Check collisions
 		if(ball.getRectangle().intersects(paddle.getRectangle())) {
-			// Simplified touching of paddle
-			// Proper game would change angle of ball depending on where it hit the paddle
+			// change angle of ball depending on where it hit the paddle
 			ball.setYVelocity(-2);
+			
+			double contactPoint = (ball.getX() + ball.getWidth() / 2) - (paddle.getX() + paddle.getWidth() / 2);
+			
+			// calculate the reflection angle based on the contact point
+			double normalContactPoint = contactPoint / (paddle.getWidth() / 2);
+			double maxReflectionAngle = Math.toRadians(45);
+			double reflectionAngle = normalContactPoint * maxReflectionAngle;
+			
+			// update ball velocity based on reflection angle
+			double speed = Math.sqrt(ball.getXVelocity() * ball.getXVelocity() + ball.getYVelocity() * ball.getYVelocity());
+			double newAngle = Math.atan2(-ball.getYVelocity(), ball.getXVelocity()) + reflectionAngle;
+			ball.setXVelocity(speed * Math.cos(newAngle));
+		    ball.setYVelocity(-speed * Math.sin(newAngle));
 		}
 		
 		for(int i = 0; i < bricks.length; i++) {
 			if (ball.getRectangle().intersects(bricks[i].getRectangle())) {
-				int ballLeft = (int) ball.getRectangle().getMinX();
-	            int ballHeight = (int) ball.getRectangle().getHeight();
-	            int ballWidth = (int) ball.getRectangle().getWidth();
-	            int ballTop = (int) ball.getRectangle().getMinY();
+				final int offset = 1;
+				int ballLeft = (int) ball.getRectangle().getMinX() + offset;
+	            int ballHeight = (int) ball.getRectangle().getHeight() - 2* offset;
+	            int ballWidth = (int) ball.getRectangle().getWidth() - 2 * offset;
+	            int ballTop = (int) ball.getRectangle().getMinY() + offset;
 
 	            Point pointRight = new Point(ballLeft + ballWidth + 1, ballTop);
 	            Point pointLeft = new Point(ballLeft - 1, ballTop);

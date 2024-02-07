@@ -8,7 +8,7 @@ public class Settings {
 	public static final int TOTAL_BRICKS = 20;
 	public static final int BRICK_VERT_PADDING = 50;
 	public static final int BRICK_HEIGHT = 30;
-	public static final int BRICK_HORI_PADDING = 50;
+	public static final int BRICK_HORI_PADDING = 95;
 	public static final int BRICK_WIDTH = 50;
 	public static final int INITIAL_BALL_X = 150;
 	public static final int INITIAL_BALL_Y = 350;
