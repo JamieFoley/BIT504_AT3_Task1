@@ -2,7 +2,7 @@ import java.awt.Graphics;
 
 public class Ball extends Sprite {
 
-	private int xVelocity = 1, yVelocity = -1;
+	private int xVelocity = 2, yVelocity = -2;
 	
 	// Constructor
 	public Ball() {
@@ -23,20 +23,21 @@ public class Ball extends Sprite {
 	public void update() {
 		x += xVelocity;
 		y += yVelocity;
+		
 		// Bounce off left side of screen
 		if(x <= 0) {
 			// Set x to 0 so it does not leave the screen
 			setX(0);
 			// Change the x velocity to make the ball go right
-			setXVelocity(1);
+			setXVelocity(2);
 		}
 		
 		// Bounce off right side of screen
 		if(x >= Settings.WINDOW_WIDTH - Settings.BALL_WIDTH) {
-			// TODO: Set x to the right edge of the screen (see the above if condition)
+			// Set x to the right edge of the screen (see the above if condition)
 			setX(Settings.WINDOW_WIDTH - Settings.BALL_WIDTH);
-			// TODO: Change the x velocity to make the ball go left
-			setXVelocity(-1);
+			// Change the x velocity to make the ball go left
+			setXVelocity(-2);
 		}
 		
 		// Bounce off top of screen
@@ -44,7 +45,7 @@ public class Ball extends Sprite {
 			// Set y to 0 so it does not leave the screen
 			setY(0);
 			// Change the y velocity to make the ball go downward
-			setYVelocity(1);
+			setYVelocity(2);
 		}
 		
 	}

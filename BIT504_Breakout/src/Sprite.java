@@ -4,36 +4,29 @@ public class Sprite {
 	
 	protected int x,y,width,height;
 	
-	// Note: This should only set a single value, they can be done in a single statement
 	public void setX(int x) {
-		// TODO
 		this.x = x;
 	}
 	public void setY(int y) { 
-		// TODO
 		this.y = y;
 	}
 	public void setWidth(int width) { 
-		// TODO
 		this.width = width;
 	}
 	public void setHeight(int height) { 
-		// TODO
 		this.height = height;
 	}
-	
-	// Note: Change the "0" to the correct variable
 	public int getX() { 
-		return this.x;	// TODO: Return correct value
+		return this.x;
 	}
 	public int getY() { 
-		return this.y;	// TODO: Return correct value
+		return this.y;
 	}
 	public int getWidth() { 
-		return this.width;	// TODO: Return correct value
+		return this.width;
 	}
 	public int getHeight() { 
-		return this.height;	// TODO: Return correct value
+		return this.height;
 	}
 	
 	Rectangle getRectangle() {

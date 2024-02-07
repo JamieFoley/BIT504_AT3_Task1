@@ -47,7 +47,6 @@ public class BreakoutPanel extends JPanel implements ActionListener, KeyListener
 				bricks[counter] = new Brick((x * Settings.BRICK_WIDTH) + Settings.BRICK_HORI_PADDING + x_space, (y * Settings.BRICK_HEIGHT) + Settings.BRICK_VERT_PADDING + y_space);
 				counter++;
 				y_space++;
-				System.out.println("Brick at (" + x + ", " + y + ")");
 			}
 			x_space++;
 			y_space = 0;
@@ -72,13 +71,15 @@ public class BreakoutPanel extends JPanel implements ActionListener, KeyListener
 	}
 	
 	private void gameOver() {
-		// TODO: Set screen message
-		//stopGame();
+		// Set screen message
+		screenMessage = "Game Over!";
+		stopGame();
 	}
 	
 	private void gameWon() {
-		// TODO: Set screen message
-		//stopGame();
+		// Set screen message
+		screenMessage = "Congratulations, you win!";
+		stopGame();
 	}
 	
 	private void stopGame() {
@@ -95,7 +96,7 @@ public class BreakoutPanel extends JPanel implements ActionListener, KeyListener
 				return;
 			} else {
 				ball.resetPosition();
-				ball.setYVelocity(-1);
+				ball.setYVelocity(-2);
 			}
 		}
 		
@@ -118,7 +119,7 @@ public class BreakoutPanel extends JPanel implements ActionListener, KeyListener
 		if(ball.getRectangle().intersects(paddle.getRectangle())) {
 			// Simplified touching of paddle
 			// Proper game would change angle of ball depending on where it hit the paddle
-			ball.setYVelocity(-1);
+			ball.setYVelocity(-2);
 		}
 		
 		for(int i = 0; i < bricks.length; i++) {
@@ -135,15 +136,15 @@ public class BreakoutPanel extends JPanel implements ActionListener, KeyListener
 
 	            if (!bricks[i].isBroken()) {
 	                if (bricks[i].getRectangle().contains(pointRight)) {
-	                    ball.setXVelocity(-1);
+	                    ball.setXVelocity(-2);
 	                } else if (bricks[i].getRectangle().contains(pointLeft)) {
-	                    ball.setXVelocity(1);
+	                    ball.setXVelocity(2);
 	                }
 
 	                if (bricks[i].getRectangle().contains(pointTop)) {
-	                    ball.setYVelocity(1);
+	                    ball.setYVelocity(2);
 	                } else if (bricks[i].getRectangle().contains(pointBottom)) {
-	                    ball.setYVelocity(-1);
+	                    ball.setYVelocity(-2);
 	                }
 	                bricks[i].setBroken(true);
 	            }
@@ -160,8 +161,9 @@ public class BreakoutPanel extends JPanel implements ActionListener, KeyListener
         paintBricks(g);
         
         // Draw lives left
+        g.setFont(new Font("Arial", Font.BOLD, 18));
         // Draw lives left in the top left hand corner
-        
+    	g.drawString(Integer.toString(livesLeft), Settings.LIVES_POSITION_X, Settings.LIVES_POSITION_Y);
         // Draw screen message
         if(screenMessage != null) {
         	g.setFont(new Font("Arial", Font.BOLD, 18));
@@ -172,13 +174,13 @@ public class BreakoutPanel extends JPanel implements ActionListener, KeyListener
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO: Set the velocity of the paddle depending on whether the player is pressing left or right
+		// Set the velocity of the paddle depending on whether the player is pressing left or right
 		if(e.getKeyCode() == KeyEvent.VK_LEFT) {
-			paddle.setXVelocity(-1);
+			paddle.setXVelocity(-2);
 		}
 		
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			paddle.setXVelocity(1);
+			paddle.setXVelocity(2);
 		}
 	}
 
