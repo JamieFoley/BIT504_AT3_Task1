@@ -28,11 +28,14 @@ public class BreakoutPanel extends JPanel implements ActionListener, KeyListener
 		
 		Timer timer = new Timer(5, this);
 		timer.start();
-		
-		// TODO: Create a new ball object and assign it to the appropriate variable
-		// TODO: Create a new paddle object and assign it to the appropriate variable
-		// TODO: Create a new bricks array (Use Settings.TOTAL_BRICKS)
-		// TODO: Call the createBricks() method
+		// Create a new ball object and assign it to the appropriate variable
+		ball = new Ball();
+		// Create a new paddle object and assign it to the appropriate variable
+		paddle = new Paddle();
+		// Create a new bricks array (Use Settings.TOTAL_BRICKS)
+		bricks = new Brick[Settings.TOTAL_BRICKS];
+		// Call the createBricks() method
+		createBricks();
 	}
 	
 	private void createBricks() {
@@ -51,24 +54,31 @@ public class BreakoutPanel extends JPanel implements ActionListener, KeyListener
 	}
 	
 	private void paintBricks(Graphics g) {
-		// TODO: Loop through the bricks and call the paint() method
+		// Loop through the bricks and call the paint() method
+		for(int i = 0; i < Settings.TOTAL_BRICKS; ++ i) {
+			bricks[i].paint(g); 
+		}
 	}
 	
 	private void update() {
 		if(gameRunning) {
-			// TODO: Update the ball and paddle
+			// Update the ball and paddle
+			ball.update();
+			paddle.update();
 			collisions();
 			repaint();
 		}
 	}
 	
 	private void gameOver() {
-		// TODO: Set screen message
+		// Set screen message
+		screenMessage = "Game Over!";
 		stopGame();
 	}
 	
 	private void gameWon() {
-		// TODO: Set screen message
+		// Set screen message
+		screenMessage = "Congratulations, you win!";
 		stopGame();
 	}
 	
@@ -86,7 +96,7 @@ public class BreakoutPanel extends JPanel implements ActionListener, KeyListener
 				return;
 			} else {
 				ball.resetPosition();
-				ball.setYVelocity(-1);
+				ball.setYVelocity(-2);
 			}
 		}
 		
@@ -107,17 +117,30 @@ public class BreakoutPanel extends JPanel implements ActionListener, KeyListener
 		
 		// Check collisions
 		if(ball.getRectangle().intersects(paddle.getRectangle())) {
-			// Simplified touching of paddle
-			// Proper game would change angle of ball depending on where it hit the paddle
-			ball.setYVelocity(-1);
+			// change angle of ball depending on where it hit the paddle
+			ball.setYVelocity(-2);
+			
+			double contactPoint = (ball.getX() + ball.getWidth() / 2) - (paddle.getX() + paddle.getWidth() / 2);
+			
+			// calculate the reflection angle based on the contact point
+			double normalContactPoint = contactPoint / (paddle.getWidth() / 2);
+			double maxReflectionAngle = Math.toRadians(45);
+			double reflectionAngle = normalContactPoint * maxReflectionAngle;
+			
+			// update ball velocity based on reflection angle
+			double speed = Math.sqrt(ball.getXVelocity() * ball.getXVelocity() + ball.getYVelocity() * ball.getYVelocity());
+			double newAngle = Math.atan2(-ball.getYVelocity(), ball.getXVelocity()) + reflectionAngle;
+			ball.setXVelocity(speed * Math.cos(newAngle));
+		    ball.setYVelocity(-speed * Math.sin(newAngle));
 		}
 		
 		for(int i = 0; i < bricks.length; i++) {
 			if (ball.getRectangle().intersects(bricks[i].getRectangle())) {
-				int ballLeft = (int) ball.getRectangle().getMinX();
-	            int ballHeight = (int) ball.getRectangle().getHeight();
-	            int ballWidth = (int) ball.getRectangle().getWidth();
-	            int ballTop = (int) ball.getRectangle().getMinY();
+				final int offset = 1;
+				int ballLeft = (int) ball.getRectangle().getMinX() + offset;
+	            int ballHeight = (int) ball.getRectangle().getHeight() - 2* offset;
+	            int ballWidth = (int) ball.getRectangle().getWidth() - 2 * offset;
+	            int ballTop = (int) ball.getRectangle().getMinY() + offset;
 
 	            Point pointRight = new Point(ballLeft + ballWidth + 1, ballTop);
 	            Point pointLeft = new Point(ballLeft - 1, ballTop);
@@ -126,15 +149,15 @@ public class BreakoutPanel extends JPanel implements ActionListener, KeyListener
 
 	            if (!bricks[i].isBroken()) {
 	                if (bricks[i].getRectangle().contains(pointRight)) {
-	                    ball.setXVelocity(-1);
+	                    ball.setXVelocity(-2);
 	                } else if (bricks[i].getRectangle().contains(pointLeft)) {
-	                    ball.setXVelocity(1);
+	                    ball.setXVelocity(2);
 	                }
 
 	                if (bricks[i].getRectangle().contains(pointTop)) {
-	                    ball.setYVelocity(1);
+	                    ball.setYVelocity(2);
 	                } else if (bricks[i].getRectangle().contains(pointBottom)) {
-	                    ball.setYVelocity(-1);
+	                    ball.setYVelocity(-2);
 	                }
 	                bricks[i].setBroken(true);
 	            }
@@ -151,8 +174,9 @@ public class BreakoutPanel extends JPanel implements ActionListener, KeyListener
         paintBricks(g);
         
         // Draw lives left
-        // TODO: Draw lives left in the top left hand corner
-        
+        g.setFont(new Font("Arial", Font.BOLD, 18));
+        // Draw lives left in the top left hand corner
+    	g.drawString(Integer.toString(livesLeft), Settings.LIVES_POSITION_X, Settings.LIVES_POSITION_Y);
         // Draw screen message
         if(screenMessage != null) {
         	g.setFont(new Font("Arial", Font.BOLD, 18));
@@ -163,12 +187,20 @@ public class BreakoutPanel extends JPanel implements ActionListener, KeyListener
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO: Set the velocity of the paddle depending on whether the player is pressing left or right
+		// Set the velocity of the paddle depending on whether the player is pressing left or right
+		if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+			paddle.setXVelocity(-2);
+		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			paddle.setXVelocity(2);
+		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO: Set the velocity of the paddle after the player has released the keys
+		// Set the velocity of the paddle after the player has released the keys
+		paddle.setXVelocity(0);
 	}
 
 	@Override
